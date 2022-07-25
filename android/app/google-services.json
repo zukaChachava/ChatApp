@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "560844080133",
+    "project_id": "flutter-chat-865d5",
+    "storage_bucket": "flutter-chat-865d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560844080133:android:fe240c9514642fdfaf886c",
+        "android_client_info": {
+          "package_name": "com.example.zuras_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560844080133-os4bvd7u5lbn0rvd5j4vlli5l9qcpkme.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_W1KpXuyfSGmB2JIJ9DTVeuIe0msvRQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560844080133-os4bvd7u5lbn0rvd5j4vlli5l9qcpkme.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
