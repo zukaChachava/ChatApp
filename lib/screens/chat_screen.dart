@@ -7,26 +7,33 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (ctx, index) {
-            return Container(
-                padding: const EdgeInsets.all(8),
-                child: const Text('This works!'));
-          }),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('chats/twqG8dA9rQILbfsDKzfs/messages')
-              .snapshots()
-              .listen((event) {
-            event.docChanges.forEach((element) {
-              print(element.doc.data());
-            });
-          });
-        },
-      ),
-    );
+        body: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('chats/twqG8dA9rQILbfsDKzfs/messages')
+                .snapshots(),
+            builder: ((context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              final documents = snapshot.data!.docs;
+
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (ctx, index) {
+                    return Container(
+                        padding: const EdgeInsets.all(8),
+                        child: Text((documents[index]['text'].toString())));
+                  });
+            })),
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('chats/twqG8dA9rQILbfsDKzfs/messages')
+                  .add({'text': 'This was added from app'});
+            }));
   }
 }
