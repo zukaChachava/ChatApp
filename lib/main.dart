@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zuras_chat/screens/chat_screen.dart';
+import 'package:zuras_chat/screens/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -16,9 +16,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Zura\'s Chat',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const ChatScreen(),
+          colorScheme: const ColorScheme(
+            primary: Colors.pink,
+            background: Colors.pink,
+            secondary: Colors.deepPurple,
+            onSecondary: Colors.white,
+            onPrimary: Colors.white,
+            error: Colors.red,
+            onError: Colors.white,
+            onBackground: Colors.white,
+            brightness: Brightness.light,
+            surface: Colors.pinkAccent,
+            onSurface: Colors.white,
+          ),
+          buttonTheme: ButtonTheme.of(context).copyWith(
+              buttonColor: Colors.pink,
+              textTheme: ButtonTextTheme.primary,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)))),
+      home: const AuthScreen(),
     );
   }
 }
