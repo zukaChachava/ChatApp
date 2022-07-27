@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  final Future<void> Function(String email, String password, String? username,
+      bool isLogin, BuildContext ctx) submit;
+  final isLoading;
+
+  const AuthForm({required this.submit, required this.isLoading, Key? key})
+      : super(key: key);
 
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -15,12 +20,14 @@ class _AuthFormState extends State<AuthForm> {
   String? _userMail;
   String? _password;
 
-  void _trySubmit() {
+  Future<void> _trySubmit() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (isValid) {
       _formKey.currentState!.save();
+      await widget.submit(_userMail!.trim(), _password!.trim(),
+          _userName?.trim(), _isLogIn, context);
     }
   }
 
@@ -87,17 +94,20 @@ class _AuthFormState extends State<AuthForm> {
               const SizedBox(
                 height: 12,
               ),
-              ElevatedButton(
-                onPressed: _trySubmit,
-                child: Text(_isLogIn ? 'Login' : 'Sign Up'),
-              ),
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _isLogIn = !_isLogIn;
-                    });
-                  },
-                  child: Text(_isLogIn ? 'Create new account' : 'Log In'))
+              if (widget.isLoading) const CircularProgressIndicator(),
+              if (!widget.isLoading)
+                ElevatedButton(
+                  onPressed: _trySubmit,
+                  child: Text(_isLogIn ? 'Login' : 'Sign Up'),
+                ),
+              if (!widget.isLoading)
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _isLogIn = !_isLogIn;
+                      });
+                    },
+                    child: Text(_isLogIn ? 'Create new account' : 'Log In'))
             ]),
           ),
         ),
