@@ -8,10 +8,12 @@ class MessageBubble extends StatelessWidget {
   final String message;
   final String userId;
   final bool isMe;
+  final String imagePath;
 
   const MessageBubble(
       {required this.message,
       required this.userId,
+      required this.imagePath,
       required this.isMe,
       Key? key})
       : super(key: key);
@@ -25,33 +27,48 @@ class MessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (!isMe)
-              Container(
-                margin: const EdgeInsets.only(left: 20),
-                child: FutureBuilder<dynamic>(
-                  future: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .get(),
-                  builder: ((context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('Loading...');
-                    }
+              if (!isMe)
+                Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  width: 100,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(imagePath),
+                          ),
+                        ),
+                        FutureBuilder<dynamic>(
+                          future: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(userId)
+                              .get(),
+                          builder: ((context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Text('Loading...');
+                            }
 
-                    String? username;
+                            String? username;
 
-                    try {
-                      username = snapshot.data['username'];
-                    } catch (err) {
-                      username = "Unknown";
-                    }
+                            try {
+                              username = snapshot.data['username'];
+                            } catch (err) {
+                              username = "Unknown";
+                            }
 
-                    return Text(
-                      username!,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    );
-                  }),
+                            return Text(
+                              username!,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            );
+                          }),
+                        ),
+                      ]),
                 ),
-              ),
             Container(
               decoration: BoxDecoration(
                 color: isMe

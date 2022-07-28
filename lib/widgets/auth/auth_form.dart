@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:zuras_chat/widgets/picker/user_image_picker.dart';
 
 class AuthForm extends StatefulWidget {
   final Future<void> Function(String email, String password, String? username,
-      bool isLogin, BuildContext ctx) submit;
+      File? image, bool isLogin, BuildContext ctx) submit;
   final isLoading;
 
   const AuthForm({required this.submit, required this.isLoading, Key? key})
@@ -19,15 +22,30 @@ class _AuthFormState extends State<AuthForm> {
   String? _userName;
   String? _userMail;
   String? _password;
+  File? _userImage;
+
+  Future<void> _pickedImage(File image) async {
+    _userImage = image;
+  }
 
   Future<void> _trySubmit() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
+    if (_userImage == null && !_isLogIn) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Pick an image'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
     if (isValid) {
       _formKey.currentState!.save();
       await widget.submit(_userMail!.trim(), _password!.trim(),
-          _userName?.trim(), _isLogIn, context);
+          _userName?.trim(), _userImage, _isLogIn, context);
     }
   }
 
@@ -42,6 +60,7 @@ class _AuthFormState extends State<AuthForm> {
           child: Form(
             key: _formKey,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
+              if (!_isLogIn) UserImagePicker(imagePickFunction: _pickedImage),
               TextFormField(
                 key: const ValueKey('Email'),
                 keyboardType: TextInputType.emailAddress,
